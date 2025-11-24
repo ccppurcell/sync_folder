@@ -21,8 +21,8 @@ clone it, cd into the folder and run
 ```
 python main.py <source> <replica> <interval> <runs> <log_file>
 ```
-where <source>, <replica> and <log_file> are paths and <runs> and
-<interval> are integers.
+where `<source>`, `<replica>` and `<log_file>` are paths and `<runs>`
+and `<interval>` are integers.
 
 ## Future improvements
 
