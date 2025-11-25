@@ -1,7 +1,7 @@
 from sync_folder.main import Synchroniser
 from pathlib import Path
 
-def test_flat_source_empty_replica(tmp_path):
+def test_create_file(tmp_path):
 
     #init the test source
     test_source = tmp_path / "source"
