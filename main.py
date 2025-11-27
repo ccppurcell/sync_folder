@@ -73,7 +73,7 @@ class Synchroniser:
             self.hash_dict[filename] = new_hash
 
         #delete missing files
-        for filename in self.hash_dict.keys():
+        for filename in list(self.hash_dict):
             if filename not in src_file_list:
                 self.delete_file(filename)
 
