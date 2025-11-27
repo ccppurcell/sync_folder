@@ -69,7 +69,7 @@ class Synchroniser:
                 self.create_file(filename)
 
             #update edited files
-            if old_hash != new_hash:
+            elif old_hash != new_hash:
                 self.update_file(filename)
 
             self.hash_dict[filename] = new_hash
