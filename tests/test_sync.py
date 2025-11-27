@@ -1,5 +1,6 @@
 from sync_folder.main import Synchroniser
 from pathlib import Path
+from unittest.mock import MagicMock
 
 def test_create_file(tmp_path):
 
@@ -98,3 +99,30 @@ def test_delete_file(tmp_path):
     #check the test file no longer exists in replica
     replica_file = test_replica / "test.txt"
     assert not replica_file.exists()
+
+def test_scheduling(tmp_path):
+
+    #init the test source
+    test_source = tmp_path / "source"
+    test_source.mkdir()
+
+    #init the replica
+    test_replica = tmp_path / "replica"
+    test_replica.mkdir()
+
+    #init the log file
+    test_log = tmp_path / "sync.log"
+    test_log.touch()
+
+
+    #init the app
+    app = Synchroniser(test_source, test_replica, 1, 3, test_log)
+
+    #mock the sync_folder method
+    app.sync_once = MagicMock()
+
+    #run the syncs
+    app.run()
+
+    #check there were 3 calls
+    assert app.sync_once.call_count == 3
