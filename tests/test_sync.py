@@ -117,7 +117,7 @@ def test_scheduling(tmp_path):
 
 
     #init the app
-    app = Synchroniser(test_source, test_replica, 1, 3, test_log)
+    app = Synchroniser(test_source, test_replica, 0.1, 3, test_log)
 
     #mock the sync_folder method
     app.sync_once = MagicMock()
