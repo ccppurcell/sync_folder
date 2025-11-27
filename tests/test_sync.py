@@ -1,7 +1,10 @@
 from sync_folder.main import Synchroniser
+import sync_folder.main as sync_main
 from pathlib import Path
 from unittest.mock import MagicMock
 import datetime as dt
+import sys
+import pytest
 
 def test_create_file(tmp_path):
 
@@ -186,3 +189,38 @@ def test_logging(tmp_path):
     assert "test.txt" in delete_log
     assert "delete" in delete_log
     assert timestamp in delete_log
+
+def test_too_few_args(monkeypatch):
+
+    monkeypatch.setattr(sys, "argv", ["prog", "src", "rep"])
+
+    with pytest.raises(SystemExit) as exc_info:
+        sync_main.main()
+
+    assert exc_info.value.code == 2
+
+def test_too_many_args(monkeypatch):
+
+    monkeypatch.setattr(
+            sys, "argv",
+            ["prog", "src", "rep", "0", "1", "log", "whoops"]
+            )
+
+    with pytest.raises(SystemExit) as exc_info:
+        sync_main.main()
+
+    assert exc_info.value.code == 2
+
+def test_wrong_arg_type(monkeypatch):
+
+    monkeypatch.setattr(
+            sys, "argv",
+            ["prog", "src", "rep", "whoops", "1", "log"]
+            )
+
+    with pytest.raises(SystemExit) as exc_info:
+        sync_main.main()
+
+    assert exc_info.value.code == 2
+
+
