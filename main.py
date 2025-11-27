@@ -41,12 +41,14 @@ class Synchroniser:
             my_scheduler.enterabs(
                     runtime,
                     0, #priority
-                    self.sync_folder,
-                    argument = (self.source,))
+                    self.sync_once)
 
         #run the syncs
         #this program is single-threaded in accordance with the spec
         my_scheduler.run()
+        
+    def sync_once(self):
+        self.sync_folder(self.source)
 
     def sync_folder(self, folder_path):
         '''perform a sync'''
