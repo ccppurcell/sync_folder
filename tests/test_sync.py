@@ -1,6 +1,7 @@
 from sync_folder.main import Synchroniser
 from pathlib import Path
 from unittest.mock import MagicMock
+import datetime as dt
 
 def test_create_file(tmp_path):
 
@@ -126,3 +127,62 @@ def test_scheduling(tmp_path):
 
     #check there were 3 calls
     assert app.sync_once.call_count == 3
+
+def test_logging(tmp_path):
+
+    #init the test source
+    test_source = tmp_path / "source"
+    test_source.mkdir()
+
+    #add a file to the test source
+    test_file = test_source / "test.txt"
+    test_file.write_text("test")
+
+    #init the replica
+    test_replica = tmp_path / "replica"
+    test_replica.mkdir()
+
+    #init the log file
+    test_log = tmp_path / "sync.log"
+    test_log.touch()
+
+    #init the app
+    app = Synchroniser(test_source, test_replica, 0, 1, test_log)
+
+    #run once to create a file
+    app.run()
+
+    #modify the file
+    test_file.write_text("modified")
+
+    #run again to update the file
+    app.run()
+
+    #remove the file
+    test_file.unlink()
+
+    #run again to delete the file
+    app.run()
+
+    log_text = test_log.read_text()
+
+    entries = log_text.splitlines()
+
+    create_log, update_log, delete_log = entries
+
+    #generate the timestamp
+    timestamp = dt.datetime.now().replace(
+            microsecond=0
+            ).isoformat()
+
+    assert "test.txt" in create_log
+    assert "create" in create_log
+    assert timestamp in create_log
+    
+    assert "test.txt" in update_log
+    assert "update" in update_log
+    assert timestamp in update_log
+
+    assert "test.txt" in delete_log
+    assert "delete" in delete_log
+    assert timestamp in delete_log
