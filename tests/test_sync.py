@@ -223,4 +223,33 @@ def test_wrong_arg_type(monkeypatch):
 
     assert exc_info.value.code == 2
 
+def test_repeated_identical_sync(tmp_path):
 
+    #init the test source
+    test_source = tmp_path / "source"
+    test_source.mkdir()
+
+    #add a file to the test source
+    (test_source / "test.txt").write_text("test")
+
+    #init the replica
+    test_replica = tmp_path / "replica"
+    test_replica.mkdir()
+
+    #init the log file
+    test_log = tmp_path / "sync.log"
+    test_log.touch()
+
+    #init the app
+    app = Synchroniser(test_source, test_replica, 0, 1, test_log)
+
+    #run the sync once to get identical replica
+    app.run()
+
+    #save the state
+    before = app.hash_dict.copy()
+
+    #sync again
+
+    #check that nothing changed
+    assert app.hash_dict == before
